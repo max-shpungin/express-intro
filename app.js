@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 
 // useful error class to throw
-const { NotFoundError } = require("./expressError");
+const { BadRequestError, NotFoundError } = require("./expressError");
 
 const {findMean, findMedian, findMode} = require("./stats");
 const { convertStrNums, convertQueryArray } = require("./utils")
@@ -20,22 +20,46 @@ app.get('/mean', function(req, res){
   // perform the operation
   // return the result in json format
 
-  const queryNums = req.query.nums;
-  const stringNums = convertQueryArray(queryNums);
-  const numNums = convertStrNums(stringNums);
+  if (!req.query.nums) {
+    throw new BadRequestError("nums is required");
+  }
+  else {
+    const queryNums = req.query.nums;
+    const stringNums = convertQueryArray(queryNums);
+    const numNums = convertStrNums(stringNums);
 
-  return res.json({operation: "mean", result:findMean(numNums)})
+    return res.json({operation: "mean", result:findMean(numNums)})
+  }
 });
 
 
 /** Finds median of nums in qs: returns {operation: "median", result } */
 app.get('/median', function(req, res){
+  if (!req.query.nums) {
+    throw new BadRequestError("nums is required");
+  }
+  else {
+    const queryNums = req.query.nums;
+    const stringNums = convertQueryArray(queryNums);
+    const numNums = convertStrNums(stringNums);
+
+    return res.json({operation: "median", result:findMedian(numNums)})
+  }
 
 });
 
 /** Finds mode of nums in qs: returns {operation: "mean", result } */
 app.get('/mode', function(req, res){
+  if (!req.query.nums) {
+    throw new BadRequestError("nums is required");
+  }
+  else {
+    const queryNums = req.query.nums;
+    const stringNums = convertQueryArray(queryNums);
+    const numNums = convertStrNums(stringNums);
 
+    return res.json({operation: "mode", result:findMode(numNums)})
+  }
 });
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
