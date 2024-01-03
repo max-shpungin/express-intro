@@ -7,7 +7,7 @@ const app = express();
 const { BadRequestError, NotFoundError } = require("./expressError");
 
 const {findMean, findMedian, findMode} = require("./stats");
-const { convertStrNums, convertQueryArray } = require("./utils")
+const { prepareResult } = require("./utils")
 
 const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 
@@ -15,20 +15,14 @@ const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 /** Finds mean of nums in qs: returns {operation: "mean", result } */
 
 app.get('/mean', function(req, res){
-  // get the string of numbers
-  // split into an array
-  // perform the operation
-  // return the result in json format
 
   if (!req.query.nums) {
-    throw new BadRequestError("nums is required");
+    throw new BadRequestError(MISSING);
   }
   else {
-    const queryNums = req.query.nums;
-    const stringNums = convertQueryArray(queryNums);
-    const numNums = convertStrNums(stringNums);
+    const result = prepareResult(findMean, 'mean', req.query.nums);
 
-    return res.json({operation: "mean", result:findMean(numNums)})
+    return res.json(result);
   }
 });
 
@@ -36,14 +30,12 @@ app.get('/mean', function(req, res){
 /** Finds median of nums in qs: returns {operation: "median", result } */
 app.get('/median', function(req, res){
   if (!req.query.nums) {
-    throw new BadRequestError("nums is required");
+    throw new BadRequestError(MISSING);
   }
   else {
-    const queryNums = req.query.nums;
-    const stringNums = convertQueryArray(queryNums);
-    const numNums = convertStrNums(stringNums);
+    const result = prepareResult(findMedian, 'median', req.query.nums);
 
-    return res.json({operation: "median", result:findMedian(numNums)})
+    return res.json(result);
   }
 
 });
@@ -51,14 +43,12 @@ app.get('/median', function(req, res){
 /** Finds mode of nums in qs: returns {operation: "mean", result } */
 app.get('/mode', function(req, res){
   if (!req.query.nums) {
-    throw new BadRequestError("nums is required");
+    throw new BadRequestError(MISSING);
   }
   else {
-    const queryNums = req.query.nums;
-    const stringNums = convertQueryArray(queryNums);
-    const numNums = convertStrNums(stringNums);
+    const result = prepareResult(findMode, 'mode', req.query.nums);
 
-    return res.json({operation: "mode", result:findMode(numNums)})
+    return res.json(result);
   }
 });
 
